@@ -1,22 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
-import { FirebaseContext } from "../context/firebase";
-import { signInAuthUserWithEmailAndPassword } from "../lib/firebase";
+import React, { useEffect } from "react";
 import { ROUTES } from "../constants/routes";
+import { useDispatch } from "react-redux";
+import { signInStart } from "../store/user/user.actions";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { firebase } = useContext(FirebaseContext);
+  const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
   const isInvalid = password === "" || email === "";
 
   const LoginHandler = async (event) => {
     event.preventDefault();
     try {
-      await signInAuthUserWithEmailAndPassword(email, password);
+      dispatch(signInStart(email, password));
       navigate(ROUTES.DASHBOARD);
     } catch (error) {
       setEmail("");
@@ -27,7 +27,7 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Login - Instagram";
-  }, []);
+  });
 
   return (
     <div className="container flex mx-auto max-w-screen-md items-center h-screen">

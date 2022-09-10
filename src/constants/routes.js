@@ -3,5 +3,5 @@ export const ROUTES = {
     DASHBOARD : "/",
     SIGN_UP : "/signup",
     PROFILE : "/p/:username",
-    NOT_FOUND : "/not-found",
+    NOT_FOUND: "/not-found",
 }

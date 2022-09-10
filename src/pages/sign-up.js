@@ -1,15 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
-import { FirebaseContext } from "../context/firebase";
-import { FirebaseApp } from "../lib/firebase";
+import React, { useState} from "react";
 import { ROUTES } from "../constants/routes";
-import { doesUserExist } from "../services/firebase";
-import { createUserAuthWithEmailAndPassword } from "../lib/firebase";
-import { updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { signUpStart } from "../store/user/user.actions";
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const { firebase } = useContext(FirebaseContext);
+  //const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,61 +14,22 @@ const SignUp = () => {
   const isInvalid =
     username === "" || fullName === "" || password === "" || email === "";
   
-  //TODO
-  //Creates and adds user to firebase
-  //Check if username is already taken
-  //Logs user in and sends to dashboard
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const SignUpHandler = async (event) => {
     event.preventDefault();
-    const usernameAvailable = await doesUserExist(username);
-
-    if (usernameAvailable) { 
-      try {
-        const createdUserResult = await createUserAuthWithEmailAndPassword(email, password);
-        console.log(createdUserResult);
-        await updateProfile(createdUserResult.user, {
-          displayName: username
-        });
-       
-        await FirebaseApp.firestore().collection('users').add({
-          userId: createdUserResult.user.uid,
-          username: username.toLowerCase(),
-          fullName,
-          emailAddress: email.toLowerCase(),
-          following: [],
-          dateCreated: Date.now(),
-        })
-        navigate(ROUTES.DASHBOARD);
-      } catch (error) {
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            setError(`Email address ${email} already in use.`);
-            break;
-          case 'auth/invalid-email':
-            setError(`Email address ${email} is invalid.`);
-            break;
-          case 'auth/operation-not-allowed':
-            setError(`Error during sign up.`);
-            break;
-          case 'auth/weak-password':
-            setError('Password is not strong enough. Add additional characters including special characters and numbers.');
-            break;
-          default:
-            console.log(error.message)
-            setError("An error occured. Please try again later");
-            break;
-        };
-      }
+    try {
+      dispatch(signUpStart(email, password, username, fullName))
+      navigate(ROUTES.DASHBOARD);
+    } catch (error) {
+      console.log(error)
     }
-    else {
-      setError('This username already exists. Please try another.')
-    }
+    
+   
   };
 
-  useEffect(() => {
-    document.title = "Sign Up - Instagram";
-  }, []);
 
   return (
     <div className="container flex mx-auto max-w-screen-md items-center h-screen">
