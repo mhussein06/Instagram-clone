@@ -4,26 +4,22 @@ import Sidebar from "../components/sidebar";
 import Header from "../components/header";
 import SignOutButton from "../components/signout-button";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutStart } from "../store/user/user.actions";
-import { ROUTES } from "../constants/routes";
-import { useNavigate } from "react-router";
 import { selectCurrentUser } from "../store/user/user.selector";
+import { current } from "@reduxjs/toolkit";
+
+//TODO
+//Deny login if error
 
 export const Dashboard = () => {
-    const currentUser = useSelector(selectCurrentUser);
-    const [user, setUser] = useState(currentUser);
+  const [currentUser, setUser] = useState(useSelector(selectCurrentUser));
 
-    const navigate = useNavigate();
 
-    React.useEffect = (() => {
-        const setTitle = (() => {
-            document.title = "Instagram - Dashboard"
-        });
-      
-        if(user === null) {
-        navigate(ROUTES.DASHBOARD)
-      }
-  });
+
+  useEffect(() => {
+    document.title = "Instagram - Dashboard";
+    console.log("useEffect ran");
+    setUser(currentUser);
+  }, [currentUser]);
 
   return (
     <div className="bg-gray-background">
@@ -32,7 +28,7 @@ export const Dashboard = () => {
         <Timeline />
         <Sidebar />
       </div>
-      {user ? <SignOutButton /> : console.log()}
+      {currentUser ? <SignOutButton /> : console.log()}
     </div>
   );
 };

@@ -16,7 +16,7 @@ const Login = () => {
   const LoginHandler = async (event) => {
     event.preventDefault();
     try {
-      dispatch(signInStart(email, password));
+       dispatch(signInStart(email, password));
       navigate(ROUTES.DASHBOARD);
     } catch (error) {
       setEmail("");
