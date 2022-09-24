@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-import { FirebaseApp, FieldValue } from "./utils/firebase.utils";
+import { firebase } from "./utils/firebase.utils";
 import "./styles/app.css";
 import { Provider } from "react-redux";
 import { store, persistor } from "./store/store";

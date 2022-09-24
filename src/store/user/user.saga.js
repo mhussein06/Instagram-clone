@@ -6,26 +6,28 @@ import {
   signUpSuccess,
   signUpFailed,
   signOutFailed,
-    signOutSuccess,
+  signOutSuccess,
+  setFollowingFailed,
+  setFollowingSuccess,
+  setFollowersSuccess,
+  setFollowersFailed,
 } from "./user.actions";
 
 import {
   getCurrentUser,
   createUserDocumentFromAuth,
   signInAuthUserWithEmailAndPassword,
-    createUserAuthWithEmailAndPassword,
-    signOutUser,
-  getUserSnapshotFromId
+  createUserAuthWithEmailAndPassword,
+  signOutUser,
+  getUserSnapshotFromId,
+
 } from "../../utils/firebase.utils";
 
 export function* getSnapshotFromUserAuth(userAuth, additionalDetails) {
   try {
-    const userID = yield call(
-      createUserDocumentFromAuth,
-      userAuth
-    );
-      const userSnapshot = yield call(getUserSnapshotFromId, userID.id);
-    yield put(signInSuccess({...userSnapshot}));
+    const userID = yield call(createUserDocumentFromAuth, userAuth);
+    const userSnapshot = yield call(getUserSnapshotFromId, userID.id);
+    yield put(signInSuccess({ ...userSnapshot }));
   } catch (error) {
     yield put(signInFailed(error));
   }
@@ -51,7 +53,6 @@ export function* signInAfterSignUp({ payload: { user, additionalDetails } }) {
 export function* signUp({
   payload: { email, password, displayName, fullName },
 }) {
-    console.log("Test");
   try {
     const { user } = yield call(
       createUserAuthWithEmailAndPassword,
@@ -85,6 +86,31 @@ export function* isUserAuthenticated() {
   }
 }
 
+// export function* setUserFollowing({
+//   payload: { userDocId }
+// }) {
+//   try {
+//     console.log(userDocId)
+//     const {following} = yield call(getFollowing, userDocId);
+//     yield put(setFollowingSuccess(following))
+//   } catch (error) {
+//     yield put(setFollowingFailed(error));
+//   }
+// }
+
+// export function* setUserFollowers({
+//   payload: { userDocId },
+// }) {
+//   try {
+//     const followers = yield call(getFollowers, userDocId);
+//     yield put(setFollowersSuccess(followers))
+
+//   } catch (error) {
+//     yield put(setFollowersFailed(error));
+//   }
+// }
+
+
 export function* onCheckUserSession() {
   yield takeLatest(USER_ACTION_TYPES.CHECK_USER_SESSION, isUserAuthenticated);
 }
@@ -105,12 +131,13 @@ export function* onSignOutStart() {
   yield takeLatest(USER_ACTION_TYPES.SIGN_OUT_START, signOut);
 }
 
+
 export function* userSaga() {
-    yield all([
-        call(onCheckUserSession),
-        call(onEmailSignInStart),
-        call(onSignUpStart),
-        call(onSignUpSuccess),
-        call(onSignOutStart),
+  yield all([
+    call(onCheckUserSession),
+    call(onEmailSignInStart),
+    call(onSignUpStart),
+    call(onSignUpSuccess),
+    call(onSignOutStart),
   ]);
 }

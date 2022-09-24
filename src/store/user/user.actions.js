@@ -24,6 +24,37 @@ export const signUpStart = (email, password, displayName, fullName) =>
     fullName,
   });
 
+//TODO
+//action creator takes user doc id, is dispatch when header is rendered, grabs following/followers,
+//sets the following/followers for the state on success
+export const setFollowingStart = (userDocId) => {
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_START, userDocId);
+};
+
+export const setFollowingSuccess = (following) => {
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_SUCCESS, {
+    following,
+  });
+};
+
+export const setFollowingFailed = (error) =>
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_FAILED, error);
+
+export const setFollowersStart = (userDocId) => {
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_START, {
+    userDocId,
+  });
+};
+
+export const setFollowersSuccess = (followers) => {
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_SUCCESS, {
+    followers,
+  });
+};
+
+export const setFollowersFailed = (error) =>
+  createAction(USER_ACTION_TYPES.SET_FOLLOWING_FAILED, error);
+
 export const signUpSuccess = (user, additionalDetails) =>
   createAction(USER_ACTION_TYPES.SIGN_UP_SUCCESS, { user, additionalDetails });
 
