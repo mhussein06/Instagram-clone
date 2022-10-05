@@ -24,6 +24,8 @@ import {
   updateProfile,
 } from "firebase/auth";
 
+import { onSnapshot } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAKLrpx44EgScvj9fFsuvroWHhQB-dgmbM",
   authDomain: "instagram-db-780a5.firebaseapp.com",
@@ -46,8 +48,7 @@ export const getUserSnapshotFromId = async (userId) => {
   let snapshot = {};
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    console.log(doc.data())
-    snapshot = {...doc.data(), docId: doc.id}
+    snapshot = { ...doc.data(), docId: doc.id };
   });
   return snapshot;
 };
@@ -173,18 +174,6 @@ export const getUserDocId = async (userId) => {
   });
 };
 
-export const getSuggestedProfiles = async (userId) => {
-  const collectionRef = collection(db, "users");
-  const q = query(collectionRef, limit(10));
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs
-    .map((user) => ({ ...user.data(), docId: user.id }))
-    .filter(
-      (profile) =>
-        profile.userId !== userId && !profile.followers.includes(userId)
-    );
-};
-
 export const updateLoggedInUserFollowing = async (
   loggedInUserDocId,
   loggedInUserId,
@@ -200,7 +189,25 @@ export const updateLoggedInUserFollowing = async (
     following = doc.data().following;
   });
   await updateDoc(userDocRef, {
-    following: isFollowingProfile ?  following.filter(e => e !== userId) : [...following, userId],
+    following: isFollowingProfile
+      ? following.filter((e) => e !== userId)
+      : [...following, userId],
+  });
+};
+
+export async function updateLikes(docId, photoId, userId, liked) {
+  const photoDocRef = doc(db, "photos", docId);
+  const collectionRef = collection(db, "photos");
+  const q = query(collectionRef, where("photoId", "==", photoId));
+  let likes = [];
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    likes = doc.data().likes;
+  });
+  await updateDoc(photoDocRef, {
+    likes: liked
+      ? likes.filter((e) => e !== userId)
+      : [...likes, userId],
   });
 };
 
@@ -210,7 +217,6 @@ export async function updateFollowedUserFollowers(
   loggedInUserId,
   isFollowingProfile
 ) {
-
   const userDocRef = doc(db, "users", otherUserDocId);
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, where("userId", "==", otherUserId));
@@ -221,8 +227,59 @@ export async function updateFollowedUserFollowers(
   });
   await updateDoc(userDocRef, {
     followers: isFollowingProfile
-      ? followers.filter(e => e !== loggedInUserId) :  [...followers, loggedInUserId]
+      ? followers.filter((e) => e !== loggedInUserId)
+      : [...followers, loggedInUserId],
   });
+}
+
+export const getSuggestedProfiles = async (userId) => {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef, limit(10));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs
+    .map((user) => ({ ...user.data(), docId: user.id }))
+    .filter(
+      (profile) =>
+        profile.userId !== userId && !profile.followers.includes(userId)
+    );
+};
+
+export async function getPhotos(userId, following) {
+  const collectionRef = collection(db, "photos");
+  const q = query(collectionRef, where("userId", "in", following));
+  const querySnapshot = await getDocs(q);
+
+  const userFollowedPhotos = querySnapshot.docs.map((photo) => ({
+    ...photo.data(),
+    docId: photo.id,
+  }));
+
+  const photosWithUserDetails = await Promise.all(
+    userFollowedPhotos.map(async (photo) => {
+      let userLikedPhoto = false;
+      if (photo.likes.includes(userId)) {
+        userLikedPhoto = true;
+      }
+      // photo.userId = 2
+      const user = await getUserSnapshotFromId(photo.userId);
+      // raphael
+      const username = user.username;
+      return { username, ...photo, userLikedPhoto };
+    })
+  );
+
+  return photosWithUserDetails;
+}
+
+export async function getUserPhotosByUserId(userId) {
+  const collectionRef = collection(db, "photos");
+  const q = query(collectionRef, where("userId", "==", userId));
+  const querySnapshot = await getDocs(q);
+  const photos = querySnapshot.docs.map((photo) => ({
+    ...photo.data(),
+    docId: photo.id,
+  }));
+  return photos;
 }
 
 export { FirebaseApp };

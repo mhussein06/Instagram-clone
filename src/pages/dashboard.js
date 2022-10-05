@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Timeline from "../components/timeline";
+import {MemoizedTimeline} from "../components/timeline";
 import {MemoizedSidebar} from "../components/sidebar/index";
 import Header from "../components/header";
 import SignOutButton from "../components/signout-button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectCurrentUser,
-  selectIsLoading,
 } from "../store/user/user.selector";
 import { current } from "@reduxjs/toolkit";
 
@@ -16,7 +15,6 @@ import { current } from "@reduxjs/toolkit";
 export const Dashboard = () => {
   const user = useSelector(selectCurrentUser);
   const [currentUser, setUser] = useState(null);
-  const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
     document.title = "Instagram - Dashboard";
@@ -25,17 +23,13 @@ export const Dashboard = () => {
 
   return (
     <div className="bg-gray-background">
-      {isLoading ? (
         <div>
           <Header />
           <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
-            <Timeline />
+            <MemoizedTimeline />
             <MemoizedSidebar />
           </div>
-        </div>
-      ) : (
-        <p> Loading......</p>
-      )}
+        </div> 
     </div>
   );
 };

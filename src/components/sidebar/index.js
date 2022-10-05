@@ -4,7 +4,6 @@ import {
   selectCurrentUser
 } from "../../store/user/user.selector";
 import { useSelector } from "react-redux";
-import { getUserDocId } from "../../utils/firebase.utils";
 import React from "react";
 
 export const Sidebar = () => {

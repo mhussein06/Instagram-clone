@@ -2,9 +2,28 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { memo } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
+import { db } from "../../utils/firebase.utils";
+import { onSnapshot } from "firebase/firestore";
 
+export const User = ({ username, fullName }) => {
+  const user = useSelector(selectCurrentUser);
+  const [following, setFollowing] = useState(user.following);
 
-export const User = ({ username, fullName }) =>
+//   useEffect(() => {
+//     db.collection("users")
+//       .doc(user.docId)
+//       .onSnapshot((snapshot) => {
+//         updateFollowing(snapshot.data().following);
+//       });
+//   }, []);
+
+  function updateFollowing(newFollowing) {
+    setFollowing(newFollowing);
+  }
+    
   !username || !fullName ? (
     <Skeleton count={1} height={61} />
   ) : (
@@ -25,7 +44,7 @@ export const User = ({ username, fullName }) =>
       </div>
     </Link>
   );
-
+};
 export default memo(User);
 
 User.propTypes = {
