@@ -53,6 +53,17 @@ export const getUserSnapshotFromId = async (userId) => {
   return snapshot;
 };
 
+export const getUserSnapshotFromUsername = async (username) => {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef, where("username", "==", username));
+  let snapshot = {};
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    snapshot = { ...doc.data(), docId: doc.id };
+  });
+  return snapshot;
+};
+
 export const createUserDocumentFromAuth = async (userAuth) => {
   if (!userAuth) return;
 
@@ -232,6 +243,20 @@ export async function updateFollowedUserFollowers(
   });
 }
 
+export async function updateComments({ displayName, comment }, docId, photoId) {
+  const photoDocRef = doc(db, "photos", docId);
+  const collectionRef = collection(db, "photos");
+  const q = query(collectionRef, where("photoId", "==", photoId));
+  let comments = [];
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    comments = doc.data().comments;
+  });
+  await updateDoc(photoDocRef, {
+    comments: [...comments, {displayName, comment}],
+  });
+}
+
 export const getSuggestedProfiles = async (userId) => {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef, limit(10));
@@ -275,7 +300,10 @@ export async function getUserPhotosByUserId(userId) {
   const collectionRef = collection(db, "photos");
   const q = query(collectionRef, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
-  const photos = querySnapshot.docs.map((photo) => ({
+  let result = null;
+  const photos = querySnapshot.docs.map((photo) => (
+  
+    {
     ...photo.data(),
     docId: photo.id,
   }));

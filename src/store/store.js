@@ -15,7 +15,6 @@ import rootReducer from "./root.reducer";
 import createSagaMiddleware from 'redux-saga';
 import { rootSaga } from "./root.saga";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import { applyPatches } from "immer";
 
 const persistConfig = {
   key: "root",

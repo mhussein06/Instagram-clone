@@ -23,7 +23,7 @@ export const Post = ({ content }) => {
       />
           <PostFooter caption={content.caption} username={content.username} />
           <PostComments docId={content.docId} comments={content.comments}
-              posted={content.dateCreated} commentInput={commentInput} />
+              posted={content.dateCreated} commentInput={commentInput} photoId={content.photoId} />
     </div>
   );
 };

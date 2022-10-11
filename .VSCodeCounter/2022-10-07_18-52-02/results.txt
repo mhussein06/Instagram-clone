@@ -1,0 +1,72 @@
+Date : 2022-10-07 18:52:02
+Directory : /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src
+Total : 36 files,  2031 codes, 193 comments, 269 blanks, all 2493 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         34 |      1,446 |         84 |        198 |      1,728 |
+| CSS        |          2 |        585 |        109 |         71 |        765 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                            | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                               |         36 |      2,031 |        193 |        269 |      2,493 |
+| components                                                                                                      |         14 |        561 |         12 |         62 |        635 |
+| components/post                                                                                                 |          7 |        240 |          3 |         27 |        270 |
+| components/post/comments                                                                                        |          2 |         90 |          1 |          7 |         98 |
+| components/sidebar                                                                                              |          4 |        157 |          9 |         22 |        188 |
+| constants                                                                                                       |          1 |          7 |          0 |          0 |          7 |
+| hooks                                                                                                           |          2 |         16 |         24 |          8 |         48 |
+| pages                                                                                                           |          4 |        224 |          3 |         26 |        253 |
+| store                                                                                                           |          8 |        263 |         38 |         58 |        359 |
+| store/user                                                                                                      |          5 |        203 |         24 |         43 |        270 |
+| styles                                                                                                          |          2 |        585 |        109 |         71 |        765 |
+| utils                                                                                                           |          2 |        266 |          3 |         35 |        304 |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                        | language   | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/App.js                                    | JavaScript |         20 |          2 |          4 |         26 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/header.js                      | JavaScript |        107 |          0 |          5 |        112 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/comments/add-comments.js  | JavaScript |         52 |          1 |          4 |         57 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/comments/post-comments.js | JavaScript |         38 |          0 |          3 |         41 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/post-actions.js           | JavaScript |         72 |          0 |          4 |         76 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/post-footer.js            | JavaScript |          9 |          0 |          4 |         13 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/post-header.js            | JavaScript |         22 |          2 |          4 |         28 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/post-image.js             | JavaScript |          6 |          0 |          3 |          9 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/post/post.js                   | JavaScript |         41 |          0 |          5 |         46 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/sidebar/index.js               | JavaScript |         23 |          0 |          3 |         26 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/sidebar/suggested-profile.js   | JavaScript |         55 |          2 |          7 |         64 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/sidebar/suggestions.js         | JavaScript |         38 |          0 |          6 |         44 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/sidebar/user.js                | JavaScript |         41 |          7 |          6 |         54 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/signout-button.js              | JavaScript |         34 |          0 |          4 |         38 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/components/timeline.js                    | JavaScript |         23 |          0 |          4 |         27 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/constants/routes.js                       | JavaScript |          7 |          0 |          0 |          7 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/hooks/use-auth-listener.js                | JavaScript |          0 |         22 |          4 |         26 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/hooks/use-photos.js                       | JavaScript |         16 |          2 |          4 |         22 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/index.js                                  | JavaScript |         21 |          0 |          3 |         24 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/pages/dashboard.js                        | JavaScript |         30 |          2 |          6 |         38 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/pages/login.js                            | JavaScript |         82 |          0 |          7 |         89 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/pages/not-found.js                        | JavaScript |         16 |          0 |          3 |         19 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/pages/sign-up.js                          | JavaScript |         96 |          1 |         10 |        107 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/seed.js                                   | JavaScript |         68 |          2 |          2 |         72 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/root.reducer.js                     | JavaScript |          6 |          0 |          4 |         10 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/root.saga.js                        | JavaScript |          5 |          0 |          1 |          6 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/store.js                            | JavaScript |         49 |         14 |         10 |         73 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/user/user.actions.js                | JavaScript |         51 |          3 |         18 |         72 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/user/user.reducer.js                | JavaScript |         28 |          0 |          4 |         32 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/user/user.saga.js                   | JavaScript |        103 |         21 |         20 |        144 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/user/user.selector.js               | JavaScript |          2 |          0 |          0 |          2 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/store/user/user.types.js                  | JavaScript |         19 |          0 |          1 |         20 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/styles/app.css                            | CSS        |        582 |        109 |         71 |        762 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/styles/tailwind.css                       | CSS        |          3 |          0 |          0 |          3 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/utils/firebase.utils.js                   | JavaScript |        263 |          3 |         34 |        300 |
+| /Users/mahadhussein/Projects/React/InstagramClone/Instagram-clone/src/utils/reducer.utils.js                    | JavaScript |          3 |          0 |          1 |          4 |
+| Total                                                                                                           |            |      2,031 |        193 |        269 |      2,493 |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

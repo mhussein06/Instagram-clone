@@ -17,7 +17,6 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const SignUpHandler = async (event) => {
     event.preventDefault();
     try {

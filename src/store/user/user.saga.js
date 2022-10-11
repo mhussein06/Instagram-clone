@@ -7,10 +7,6 @@ import {
   signUpFailed,
   signOutFailed,
   signOutSuccess,
-  setFollowingFailed,
-  setFollowingSuccess,
-  setFollowersSuccess,
-  setFollowersFailed,
 } from "./user.actions";
 
 import {
@@ -85,30 +81,6 @@ export function* isUserAuthenticated() {
     yield put(signInFailed(error));
   }
 }
-
-// export function* setUserFollowing({
-//   payload: { userDocId }
-// }) {
-//   try {
-//     console.log(userDocId)
-//     const {following} = yield call(getFollowing, userDocId);
-//     yield put(setFollowingSuccess(following))
-//   } catch (error) {
-//     yield put(setFollowingFailed(error));
-//   }
-// }
-
-// export function* setUserFollowers({
-//   payload: { userDocId },
-// }) {
-//   try {
-//     const followers = yield call(getFollowers, userDocId);
-//     yield put(setFollowersSuccess(followers))
-
-//   } catch (error) {
-//     yield put(setFollowersFailed(error));
-//   }
-// }
 
 
 export function* onCheckUserSession() {
