@@ -14,8 +14,10 @@ export const profileReducer = (state = PROFILE_INITIAL_STATE, action = {}) => {
     case PROFILE_ACTION_TYPES.SET_PROFILE_SUCCESS:
       return { ...state, profile: payload, isLoading: false};
 
+    case PROFILE_ACTION_TYPES.SET_PROFILE_FOLLOWERS:
+      return {...state, profile: payload, isLoading: false}
     case PROFILE_ACTION_TYPES.SET_PHOTOS_SUCCESS:
-      return { ...state, photosCollection: payload };
+      return { ...state, photosCollection: payload, isLoading: false };
     case PROFILE_ACTION_TYPES.SET_PROFILE_FAILED:
     case PROFILE_ACTION_TYPES.SET_PHOTOS_FAILED:
       return { ...state, error: payload };

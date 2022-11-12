@@ -2,7 +2,7 @@ import { USER_ACTION_TYPES } from "./user.types";
 
 export const USER_INITIAL_STATE = {
   currentUser: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -10,8 +10,9 @@ export const userReducer = (state = USER_INITIAL_STATE, action = {}) => {
   const { type, payload } = action;
 
   switch (type) {
+    case USER_ACTION_TYPES.SET_CURRENT_USER:
     case USER_ACTION_TYPES.LOG_IN_SUCCESS:
-      return { ...state, currentUser: payload, isLoading: true };
+      return { ...state, currentUser: payload, isLoading: false};
     case USER_ACTION_TYPES.SIGN_OUT_SUCCESS:
       return { ...state, currentUser: null };
     case USER_ACTION_TYPES.SIGN_UP_FAILED:

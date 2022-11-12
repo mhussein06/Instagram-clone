@@ -3,19 +3,22 @@ import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
 import { getSuggestedProfiles } from "../../utils/firebase.utils";
 import SuggestedProfile from "./suggested-profile";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
 
-export const Suggestions = ({ userId }) => {
+export const Suggestions = () => {
   const [profiles, setProfiles] = useState(null);
+  const user = useSelector(selectCurrentUser)
 
   useEffect(() => {
     const suggestedProfiles = async () => {
-      const response = await getSuggestedProfiles(userId);
+      const response = await getSuggestedProfiles(user.userId);
       setProfiles(response);
     };
-    if (userId) {
+    return () => {
       suggestedProfiles();
     }
-  }, [userId]);
+  }, [user]);
 
   return !profiles ? (
     <Skeleton count={1} height={150} className="mt-5" />

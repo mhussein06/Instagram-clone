@@ -16,7 +16,6 @@ import {
   createUserAuthWithEmailAndPassword,
   signOutUser,
   getUserSnapshotFromId,
-
 } from "../../utils/firebase.utils";
 
 export function* getSnapshotFromUserAuth(userAuth, additionalDetails) {
@@ -102,6 +101,7 @@ export function* onSignUpSuccess() {
 export function* onSignOutStart() {
   yield takeLatest(USER_ACTION_TYPES.SIGN_OUT_START, signOut);
 }
+
 
 
 export function* userSaga() {

@@ -9,6 +9,7 @@ import Post from "./post/post";
 export const Timeline = () => {
   const user = useSelector(selectCurrentUser);
   const { photos } = usePhotos(user);
+  
 
   return (
     <div className="container col-span-2">

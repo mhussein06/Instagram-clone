@@ -1,16 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getUserSnapshotFromUsername } from "../utils/firebase.utils";
 import { ROUTES } from "../constants/routes";
-import Header from "../components/header";
-import ProfileHeader from "../components/profile/profile-header";
+import { MemoizedHeader } from "../components/header";
+
 import { useDispatch } from "react-redux";
 import {
   setProfileStart,
   setPhotosStart,
 } from "../store/profile/profile.actions";
-import { PROFILE_ACTION_TYPES } from "../store/profile/profile.types";
-import UserProfile from "../components/profile/user-profile";
+import { useState } from "react";
+
+import UserProfile from "../components/profile/profile-user";
 import { useSelector } from "react-redux";
 import { selectIsLoading } from "../store/profile/profile.selector";
 
@@ -19,30 +20,31 @@ export const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoading = useSelector(selectIsLoading);
+  const [imageSrc, setImageSrc] = useState('');
+  
 
   useEffect(() => {
     async function checkUserExists() {
       const user = await getUserSnapshotFromUsername(username);
       if (user != null) {
         dispatch(setProfileStart(user));
-        console.log("profile page", user.userId);
         dispatch(setPhotosStart(user.userId));
       } else {
         navigate(ROUTES.NOT_FOUND);
       }
     }
+  
+
 
     checkUserExists();
   }, [dispatch, navigate, username]);
   return (
     <div className="bg-background-gray">
-      <Header />
+      <MemoizedHeader imageSrc={imageSrc} setImageSrc={setImageSrc}/>
       {!isLoading && (
-        <>
-          <div className="mx-auto max-w-screen-lg">
-            <UserProfile />
-          </div>
-        </>
+        <div className="mx-auto max-w-screen-lg">
+          <UserProfile imageSrc={imageSrc} setImageSrc={setImageSrc}/>
+        </div>
       )}
     </div>
   );

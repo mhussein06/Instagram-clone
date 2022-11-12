@@ -18,3 +18,6 @@ export const setPhotosSuccess = (photos) =>
 
 export const setPhotosFailed = (error) =>
   createAction(PROFILE_ACTION_TYPES.SET_PHOTOS_START, error );
+
+export const setProfileFollowers = (followers) =>
+  createAction(PROFILE_ACTION_TYPES.SET_PROFILE_FOLLOWERS, followers);

@@ -11,7 +11,6 @@ import { getUserPhotosByUserId } from "../../utils/firebase.utils";
 
 export function* getProfile({ payload: user }) {
   try {
-    console.log("saga", user);
     yield put(setProfileSuccess({ ...user }));
   } catch (error) {
     yield put(setProfileFailed(error));
@@ -21,8 +20,7 @@ export function* getProfile({ payload: user }) {
 export function* getPhotos({ payload: userId }) {
   try {
     const photos = yield call(getUserPhotosByUserId, userId);
-    console.log(photos);
-    yield put(setPhotosSuccess({ ...photos }));
+    yield put(setPhotosSuccess(photos));
   } catch (error) {
     yield put(setPhotosFailed(error));
   }

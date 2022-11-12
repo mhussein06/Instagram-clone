@@ -13,7 +13,7 @@ export const Sidebar = () => {
       {user ? (
         <>
           <User username={user.username} fullName={user.fullName} />
-          <Suggestions userId={user.userId} />
+          <Suggestions />
         </>
       ) : (
         <p>Loading...</p>

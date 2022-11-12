@@ -13,7 +13,7 @@ export const Post = ({ content }) => {
   return (
     <div className="rounded col-span-4 border bg-white border-gray-primary mb-8">
       <PostHeader username={content.username} />
-      <PostImage src={content.imageSrc} caption={content.caption} />
+      <PostImage src={content.imageUrl} caption={content.caption} />
       <PostActions
         docId={content.docId}
         photoId={content.photoId}
@@ -31,14 +31,13 @@ export const Post = ({ content }) => {
 Post.propTypes = {
   content: PropTypes.shape({
     username: PropTypes.string,
-    imageSrc: PropTypes.string,
+    imageUrl: PropTypes.string,
     caption: PropTypes.string,
     docId: PropTypes.string,
     userLikedPhoto: PropTypes.bool,
     likes: PropTypes.array,
     comments: PropTypes.array,
     dateCreated: PropTypes.number,
-    photoId: PropTypes.number,
   }),
 };
 

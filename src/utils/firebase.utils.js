@@ -1,9 +1,7 @@
-import firebase from "firebase/compat/app";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import {
-  arrayUnion,
   updateDoc,
-  arrayRemove,
   getFirestore,
   doc,
   getDoc,
@@ -24,7 +22,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import { onSnapshot } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKLrpx44EgScvj9fFsuvroWHhQB-dgmbM",
@@ -36,6 +33,7 @@ const firebaseConfig = {
 };
 
 const FirebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage();
 const auth = getAuth();
 
 export const db = getFirestore();
@@ -50,6 +48,8 @@ export const getUserSnapshotFromId = async (userId) => {
   querySnapshot.forEach((doc) => {
     snapshot = { ...doc.data(), docId: doc.id };
   });
+  const pfp = await getUserAvatar(snapshot.username);
+  snapshot = { ...snapshot, profilePicture: pfp };
   return snapshot;
 };
 
@@ -58,8 +58,9 @@ export const getUserSnapshotFromUsername = async (username) => {
   const q = query(collectionRef, where("username", "==", username));
   let snapshot = {};
   const querySnapshot = await getDocs(q);
+  const pfp = await getUserAvatar(username);
   querySnapshot.forEach((doc) => {
-    snapshot = { ...doc.data(), docId: doc.id };
+    snapshot = { ...doc.data(), docId: doc.id, profilePicture: pfp };
   });
   return snapshot;
 };
@@ -87,6 +88,8 @@ export const doesUserExist = async (username) => {
   return (await querySnapshot).empty;
 };
 
+
+
 export const createUserAuthWithEmailAndPassword = async (
   email,
   password,
@@ -97,6 +100,7 @@ export const createUserAuthWithEmailAndPassword = async (
     console.log("Parameters not recieved");
     return;
   }
+
 
   const usernameAvailable = await doesUserExist(displayName);
   console.log("username available: ", usernameAvailable);
@@ -123,6 +127,7 @@ export const createUserAuthWithEmailAndPassword = async (
         dateCreated: Date.now(),
       });
       console.log(createdUserSnapshot);
+      await updateAvatar('/images/defaultpfp.jpg', displayName.toLowerCase())
       return createdUserSnapshot;
     } catch (error) {
       switch (error.code) {
@@ -151,8 +156,6 @@ export const createUserAuthWithEmailAndPassword = async (
 
 //seedDatabase(FirebaseApp);
 
-export const onAuthChangedListener = (callback) =>
-  onAuthStateChanged(auth, callback);
 
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
@@ -216,11 +219,9 @@ export async function updateLikes(docId, photoId, userId, liked) {
     likes = doc.data().likes;
   });
   await updateDoc(photoDocRef, {
-    likes: liked
-      ? likes.filter((e) => e !== userId)
-      : [...likes, userId],
+    likes: liked ? likes.filter((e) => e !== userId) : [...likes, userId],
   });
-};
+}
 
 export async function updateFollowedUserFollowers(
   otherUserDocId,
@@ -253,7 +254,7 @@ export async function updateComments({ displayName, comment }, docId, photoId) {
     comments = doc.data().comments;
   });
   await updateDoc(photoDocRef, {
-    comments: [...comments, {displayName, comment}],
+    comments: [...comments, { displayName, comment }],
   });
 }
 
@@ -269,45 +270,113 @@ export const getSuggestedProfiles = async (userId) => {
     );
 };
 
-export async function getPhotos(userId, following) {
-  const collectionRef = collection(db, "photos");
-  const q = query(collectionRef, where("userId", "in", following));
-  const querySnapshot = await getDocs(q);
-
-  const userFollowedPhotos = querySnapshot.docs.map((photo) => ({
-    ...photo.data(),
-    docId: photo.id,
-  }));
-
+export async function getPhotoWithUserDetails(userFollowedPhotos, userId) {
   const photosWithUserDetails = await Promise.all(
     userFollowedPhotos.map(async (photo) => {
       let userLikedPhoto = false;
       if (photo.likes.includes(userId)) {
         userLikedPhoto = true;
       }
-      // photo.userId = 2
       const user = await getUserSnapshotFromId(photo.userId);
-      // raphael
       const username = user.username;
       return { username, ...photo, userLikedPhoto };
     })
   );
-
   return photosWithUserDetails;
+}
+
+export async function getPhotos(userId, following) {
+  const collectionRef = collection(db, "photos");
+  const q = query(collectionRef, where("userId", "in", following));
+  const querySnapshot = await getDocs(q);
+
+  const userFollowedPhotos = await Promise.all(querySnapshot.docs.map(async (photo) => (
+    
+    {
+    ...photo.data(),
+      docId: photo.id,
+    imageUrl: await getUserPost(photo.id),
+  })));
+
+  return getPhotoWithUserDetails(userFollowedPhotos, userId);
 }
 
 export async function getUserPhotosByUserId(userId) {
   const collectionRef = collection(db, "photos");
   const q = query(collectionRef, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
-  let result = null;
-  const photos = querySnapshot.docs.map((photo) => (
-  
+
+ 
+  const photos = await Promise.all(querySnapshot.docs.map(async (photo) => (
+
     {
-    ...photo.data(),
-    docId: photo.id,
-  }));
+      ...photo.data(),
+      docId: photo.id,
+      imageUrl: await getUserPost(photo.id),
+    })));
+  
+  // for (const photo of photos) {
+  //   const docId = (await photo).docId
+  //   const imageSrc = getUserPost(docId);
+  //   photo.imageSrc = imageSrc;
+  // }
   return photos;
+}
+
+export async function getUserAvatar(username) {
+  const path = "images/profiles/" + username + '.jpg';
+  const avatarRef = ref(storage, path);
+
+  const result = await getDownloadURL(avatarRef).then((url) => {
+    return url;
+  });
+
+  return result;
+}
+
+export const createPost = async (caption, userId, file) => {
+  if (!caption || !userId || !file) {
+    return;
+  }
+  
+  const post = {
+    caption: caption,
+    comments: [],
+    dateCreated: Date.now(),
+    likes: [],
+    userId: userId,
+  }
+
+  const docRef = await addDoc(collection(db, "photos"), post);
+  const postId = docRef.id;
+  await uploadPostPhoto(file, postId);
+  return {
+    ...post,
+    imageUrl: await getUserPost(postId),
+  }
+}
+
+export async function getUserPost(docId) {
+  const path = "images/posts/" + docId + '.jpg';
+  const avatarRef = ref(storage, path);
+  const result = await getDownloadURL(avatarRef).then((url) => {
+    return url;
+  });
+  return result;
+}
+
+export async function uploadPostPhoto(file, docId) {
+  const postRef = ref(storage, "images/posts/" + docId + '.jpg');
+  await uploadBytes(postRef, file).then((snapshot) => {
+    console.log("Uploaded a blob or file!");
+  });
+}
+
+export async function updateAvatar(file, username) {
+  const avatarRef = ref(storage, "images/profiles/" + username + '.jpg');
+  await uploadBytes(avatarRef, file).then((snapshot) => {
+    console.log("Uploaded a blob or file!");
+  });
 }
 
 export { FirebaseApp };
