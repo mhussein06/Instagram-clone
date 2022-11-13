@@ -1,7 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { selectPhotoCollection } from "../../store/profile/profile.selector";
-import { getUserPost } from "../../utils/firebase.utils";
 
 export const ProfilePhotos = () => {
   const photos = useSelector(selectPhotoCollection);

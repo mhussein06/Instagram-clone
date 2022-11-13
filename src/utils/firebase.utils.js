@@ -34,6 +34,7 @@ const firebaseConfig = {
 
 const FirebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage();
+const storageRef = ref(storage);
 const auth = getAuth();
 
 export const db = getFirestore();
@@ -49,7 +50,10 @@ export const getUserSnapshotFromId = async (userId) => {
     snapshot = { ...doc.data(), docId: doc.id };
   });
   const pfp = await getUserAvatar(snapshot.username);
-  snapshot = { ...snapshot, profilePicture: pfp };
+  pfp ? (snapshot = { ...snapshot, profilePicture: pfp }) : (
+    snapshot = { ...snapshot, profilePicture: "/images/defaultpfp.jpg" }
+  )
+  
   return snapshot;
 };
 
@@ -58,10 +62,14 @@ export const getUserSnapshotFromUsername = async (username) => {
   const q = query(collectionRef, where("username", "==", username));
   let snapshot = {};
   const querySnapshot = await getDocs(q);
-  const pfp = await getUserAvatar(username);
   querySnapshot.forEach((doc) => {
-    snapshot = { ...doc.data(), docId: doc.id, profilePicture: pfp };
+    snapshot = { ...doc.data(), docId: doc.id };
   });
+  const pfp = await getUserAvatar(username);
+  pfp ? (snapshot = { ...snapshot, profilePicture: pfp }) : (
+    snapshot = { ...snapshot, profilePicture: "/images/defaultpfp.jpg" }
+  )
+  
   return snapshot;
 };
 
@@ -305,21 +313,13 @@ export async function getUserPhotosByUserId(userId) {
   const collectionRef = collection(db, "photos");
   const q = query(collectionRef, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
-
- 
   const photos = await Promise.all(querySnapshot.docs.map(async (photo) => (
-
     {
       ...photo.data(),
       docId: photo.id,
       imageUrl: await getUserPost(photo.id),
     })));
   
-  // for (const photo of photos) {
-  //   const docId = (await photo).docId
-  //   const imageSrc = getUserPost(docId);
-  //   photo.imageSrc = imageSrc;
-  // }
   return photos;
 }
 
@@ -327,9 +327,13 @@ export async function getUserAvatar(username) {
   const path = "images/profiles/" + username + '.jpg';
   const avatarRef = ref(storage, path);
 
+
   const result = await getDownloadURL(avatarRef).then((url) => {
     return url;
-  });
+  }).catch(error => {
+    console.log("File does not exist");
+    return null;
+  })
 
   return result;
 }

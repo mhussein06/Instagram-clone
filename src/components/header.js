@@ -8,12 +8,11 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db, createPost} from "../utils/firebase.utils";
 import { setCurrentUser } from "../store/user/user.actions";
 import PostModal from "./modal/upload-post-modal";
-import { selectPhotoCollection, selectCurrentProfile } from "../store/profile/profile.selector";
+import { selectCurrentProfile } from "../store/profile/profile.selector";
 import { setPhotosStart } from "../store/profile/profile.actions";
 
 export const Header = ({ imageSrc, setImageSrc }) => {
   const user = useSelector(selectCurrentUser);
-  const photosCollection = useSelector(selectPhotoCollection);
   const profile = useSelector(selectCurrentProfile);
   const dispatch = useDispatch();
   const navigate = useNavigate();

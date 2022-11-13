@@ -4,15 +4,7 @@ import { MemoizedHeader } from "../components/header";
 import { useState } from "react";
 
 export const Dashboard = () => {
-  // const user = useSelector(selectCurrentUser);
-  // const [currentUser, setUser] = useState(null);
-
-  // useEffect(() => {
-  //   document.title = "Instagram - Dashboard";
-  //   setUser(user);
-  // }, [user]);
   const [imageSrc, setImageSrc] = useState('');
-
   return (
     <div className="bg-gray-background">
         <div>

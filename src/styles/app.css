@@ -569,6 +569,9 @@ video {
 .mb-5 {
   margin-bottom: 1.25rem;
 }
+.mt-36 {
+  margin-top: 9rem;
+}
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -656,15 +659,6 @@ video {
 .h-40 {
   height: 10rem;
 }
-.h-60 {
-  height: 15rem;
-}
-.h-0 {
-  height: 0px;
-}
-.h-80 {
-  height: 20rem;
-}
 .w-full {
   width: 100%;
 }
@@ -697,9 +691,6 @@ video {
 }
 .w-16 {
   width: 4rem;
-}
-.w-80 {
-  width: 20rem;
 }
 .max-w-screen-lg {
   max-width: 1024px;
@@ -800,9 +791,6 @@ video {
 }
 .fill-red {
   fill: #ed4956;
-}
-.object-cover {
-  object-fit: cover;
 }
 .p-4 {
   padding: 1rem;

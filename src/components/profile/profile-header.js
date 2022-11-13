@@ -24,7 +24,7 @@ export const ProfileHeader = ({imageSrc, setImageSrc}) => {
   const dispatch = useDispatch();
   const [isFollowingProfile, setIsFollowingProfile] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [profileImage, setProfileImage] = useState('');
+  const [profileImage, setProfileImage] = useState(currentProfile.profilePicture);
   const [file, setFile] = useState("");
   const activeFollowButton =
     currentUser && currentUser.userId !== currentProfile.userId;
@@ -69,16 +69,12 @@ export const ProfileHeader = ({imageSrc, setImageSrc}) => {
   };
   useEffect(() => {
     const fetchImageSrc = async () => {
-      let pfp = '';
-      if (activeFollowButton) {
-        pfp = await getUserAvatar(currentProfile.username)
-        setProfileImage(pfp)
-      } else {
-        pfp = await getUserAvatar(currentUser.username)
+      if (!activeFollowButton) {
+        const pfp = currentUser.profilePicture;
         setImageSrc(pfp)
       }
-      
     }
+    
     fetchImageSrc();
 
     const checkUserFollowingProfile = async () => {
@@ -115,7 +111,7 @@ export const ProfileHeader = ({imageSrc, setImageSrc}) => {
             className="rounded-full h-40 w-40 flex"
             alt={`${currentProfile.username}'s profile picture`}
             src={profileImage}
-          />) : (
+          />) : imageSrc && (
             <img
             className="rounded-full h-40 w-40 flex"
             alt={`${currentProfile.username}'s profile picture`}

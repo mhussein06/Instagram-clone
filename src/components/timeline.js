@@ -13,12 +13,15 @@ export const Timeline = () => {
 
   return (
     <div className="container col-span-2">
-      {!photos ? 
+      {!photos ?
           <Skeleton count={4} width={640} height={500}  className="mb-5" />
          : photos?.length > 0 ? (
         photos.map((content) => <Post key={content.docId} content={content} />)
-      ) : (
-        <p className="text-center text-2xl"> Follow people to see photos </p>
+        ) : (
+            <div className="text-center text-2xl mt-36">
+              <p> Looks like this list is empty!</p> <br />
+              <p>Follow people to see photos! </p>
+            </div>
       )}
     </div>
   );
