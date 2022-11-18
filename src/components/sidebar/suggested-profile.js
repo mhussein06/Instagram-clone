@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import {
   updateLoggedInUserFollowing,
   updateFollowedUserFollowers,
+  getUserAvatar,
 } from "../../utils/firebase.utils";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
 export const SuggestedProfile = ({ profile }) => {
@@ -13,6 +14,7 @@ export const SuggestedProfile = ({ profile }) => {
   const [followed, setFollowed] = useState(false);
   const user = useSelector(selectCurrentUser);
   const loggedInUserDocId = user.docId;
+  const [imageSrc, setImageSrc] = useState('');
 
   const handleFollowUser = () => {
     setFollowed(true);
@@ -24,19 +26,23 @@ export const SuggestedProfile = ({ profile }) => {
       false
     );
   }
-
-  //TODO
-  //Handle followers discerns if user is already followed or not, follows/unfollows accordingly
+  useEffect(() => {
+    const fetchData = async () => {
+      const pfp = await getUserAvatar(username);
+      setImageSrc(pfp)
+    }
+    fetchData();
+  }, [username])
 
   return !followed ? (
     <div className="flex flex-row items-center align-items justify-between">
       <div className="flex items-center justify-between">
         <Link to={`/p/${username}`}>
-        <img
+       {imageSrc && (<img
           className="rounded-full w-8 flex mr-3"
-          src={`/images/avatars/${username}.jpg`}
+          src={imageSrc}
           alt=""
-          />
+          />)}
           </Link>
         <Link to={`/p/${username}`}>
           <p className="font-bold text-sm"> {username} </p>

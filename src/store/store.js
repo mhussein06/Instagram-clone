@@ -15,6 +15,18 @@ import rootReducer from "./root.reducer";
 import createSagaMiddleware from 'redux-saga';
 import { rootSaga } from "./root.saga";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { getPersistConfig } from "redux-deep-persist";
+
+
+const config = getPersistConfig({
+  key: 'root',
+  storage,
+  whitelist: [
+      'user.currentUser',  
+      'user.isLoading',  
+  ],
+  rootReducer,
+})
 
 const persistConfig = {
   key: "root",
@@ -36,7 +48,7 @@ const composeSelector =
   compose;
 
 const composedEnhancers = composeSelector(applyMiddleware(...middleWares));
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(config, rootReducer);
 // export const store = createStore(
 //   persistedReducer,
 //   undefined,

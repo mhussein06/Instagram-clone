@@ -17,18 +17,19 @@ import {
 } from "../../utils/firebase.utils";
 import ProfileModal from "../modal/upload-profile-modal";
 
-export const ProfileHeader = ({imageSrc, setImageSrc}) => {
+export const ProfileHeader = ({ imageSrc, setImageSrc }) => {
   const currentUser = useSelector(selectCurrentUser);
   const currentProfile = useSelector(selectCurrentProfile);
   const photos = useSelector(selectPhotoCollection);
   const dispatch = useDispatch();
   const [isFollowingProfile, setIsFollowingProfile] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [profileImage, setProfileImage] = useState(currentProfile.profilePicture);
+  const [profileImage, setProfileImage] = useState(
+    currentProfile.profilePicture
+  );
   const [file, setFile] = useState("");
   const activeFollowButton =
     currentUser && currentUser.userId !== currentProfile.userId;
-
 
   const handleToggleFollow = async () => {
     //update profile state and user state, create a new array with the new follower/without follower, pass as payload
@@ -69,12 +70,12 @@ export const ProfileHeader = ({imageSrc, setImageSrc}) => {
   };
   useEffect(() => {
     const fetchImageSrc = async () => {
-      if (!activeFollowButton) {
+      if (!activeFollowButton && currentUser) {
         const pfp = currentUser.profilePicture;
-        setImageSrc(pfp)
+        setImageSrc(pfp);
       }
-    }
-    
+    };
+
     fetchImageSrc();
 
     const checkUserFollowingProfile = async () => {
@@ -100,23 +101,35 @@ export const ProfileHeader = ({imageSrc, setImageSrc}) => {
     const newUser = {
       ...currentUser,
       profilePicture: newPfp,
-    }
+    };
     dispatch(setCurrentUser(newUser));
   };
   return (
     <div>
       <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
         <div className="container flex justify-center items-center">
-          {activeFollowButton ? profileImage && (<img
-            className="rounded-full h-40 w-40 flex"
-            alt={`${currentProfile.username}'s profile picture`}
-            src={profileImage}
-          />) : imageSrc && (
+          {!currentUser ? (
             <img
-            className="rounded-full h-40 w-40 flex"
-            alt={`${currentProfile.username}'s profile picture`}
-            src={imageSrc}
-          />
+              className="rounded-full h-40 w-40 flex"
+              alt={`${currentProfile.username}'s profile picture`}
+              src={currentProfile.profilePicture}
+            />
+          ) : activeFollowButton ? (
+            profileImage && (
+              <img
+                className="rounded-full h-40 w-40 flex"
+                alt={`${currentProfile.username}'s profile picture`}
+                src={profileImage}
+              />
+            )
+          ) : (
+            imageSrc && (
+              <img
+                className="rounded-full h-40 w-40 flex"
+                alt={`${currentProfile.username}'s profile picture`}
+                src={imageSrc}
+              />
+            )
           )}
         </div>
         <div className="flex items-center justify-center flex-col col-span-2">

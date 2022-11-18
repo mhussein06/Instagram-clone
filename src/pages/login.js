@@ -1,33 +1,44 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ROUTES } from "../constants/routes";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signInStart } from "../store/user/user.actions";
+import { selectUserError, selectCurrentUser } from "../store/user/user.selector";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const userError = useSelector(selectUserError);
+  const user = useSelector(selectCurrentUser);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
+
   const isInvalid = password === "" || email === "";
 
   const LoginHandler = async (event) => {
     event.preventDefault();
-    try {
-       dispatch(signInStart(email, password));
-      navigate(ROUTES.DASHBOARD);
-    } catch (error) {
-      setEmail("");
-      setPassword("");
-      setError("Invalid email address or password");
-    }
+    dispatch(signInStart(email, password));
+    
   };
 
   useEffect(() => {
     document.title = "Login - Instagram";
-  });
+    if (user) {
+      navigate(ROUTES.DASHBOARD);
+    }
+    switch (userError) {
+      case "auth/wrong-password":
+      alert("Username or Password is incorrect! Please try again.");
+      break;
+    case "auth/user-not-found":
+      alert("Email does not exist. Please register for free or try again.");
+      break;
+    case null:     
+      return;
+    default:
+      console.log("Error occured", userError);
+    }
+  }, [userError, user, navigate]);
 
   return (
     <div className="container flex mx-auto max-w-screen-md items-center h-screen">
@@ -43,7 +54,6 @@ const Login = () => {
               className="mt-2 w-6/12 mb-4"
             />
           </h1>
-          {error && <p className="mb-4 text-xs text-red-primary">{error}</p>}
           <form onSubmit={LoginHandler} method="POST">
             <input
               aria-label="Enter your email address"
@@ -75,7 +85,6 @@ const Login = () => {
           <p>
             Don't have an account?
             <Link to="/signup" className="font-bold text-blue-medium">
-              {" "}
               Sign Up
             </Link>
           </p>

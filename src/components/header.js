@@ -11,6 +11,13 @@ import PostModal from "./modal/upload-post-modal";
 import { selectCurrentProfile } from "../store/profile/profile.selector";
 import { setPhotosStart } from "../store/profile/profile.actions";
 
+/* TODO
+onMount, check user session
+header icons:
+sign in,
+logo takes you to sign in, follow takes you to sign in
+*/
+
 export const Header = ({ imageSrc, setImageSrc }) => {
   const user = useSelector(selectCurrentUser);
   const profile = useSelector(selectCurrentProfile);
@@ -47,7 +54,7 @@ export const Header = ({ imageSrc, setImageSrc }) => {
   };
 
   const uploadPost = async (e) => {
-    await createPost(caption, user.userId, file);
+    await createPost(caption, user.userId, user.username, file);
     if (profile && profile.username === user.username) {
       dispatch(setPhotosStart(user.userId));
     }

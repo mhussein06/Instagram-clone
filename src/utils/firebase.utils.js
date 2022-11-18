@@ -22,7 +22,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyAKLrpx44EgScvj9fFsuvroWHhQB-dgmbM",
   authDomain: "instagram-db-780a5.firebaseapp.com",
@@ -34,7 +33,6 @@ const firebaseConfig = {
 
 const FirebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage();
-const storageRef = ref(storage);
 const auth = getAuth();
 
 export const db = getFirestore();
@@ -50,10 +48,7 @@ export const getUserSnapshotFromId = async (userId) => {
     snapshot = { ...doc.data(), docId: doc.id };
   });
   const pfp = await getUserAvatar(snapshot.username);
-  pfp ? (snapshot = { ...snapshot, profilePicture: pfp }) : (
-    snapshot = { ...snapshot, profilePicture: "/images/defaultpfp.jpg" }
-  )
-  
+  snapshot = { ...snapshot, profilePicture: pfp };
   return snapshot;
 };
 
@@ -66,16 +61,13 @@ export const getUserSnapshotFromUsername = async (username) => {
     snapshot = { ...doc.data(), docId: doc.id };
   });
   const pfp = await getUserAvatar(username);
-  pfp ? (snapshot = { ...snapshot, profilePicture: pfp }) : (
-    snapshot = { ...snapshot, profilePicture: "/images/defaultpfp.jpg" }
-  )
-  
+  snapshot = { ...snapshot, profilePicture: pfp };
+
   return snapshot;
 };
 
 export const createUserDocumentFromAuth = async (userAuth) => {
   if (!userAuth) return;
-
   const userDocRef = doc(db, "users", userAuth.uid);
   const userSnapshot = await getDoc(userDocRef);
 
@@ -96,8 +88,6 @@ export const doesUserExist = async (username) => {
   return (await querySnapshot).empty;
 };
 
-
-
 export const createUserAuthWithEmailAndPassword = async (
   email,
   password,
@@ -108,8 +98,6 @@ export const createUserAuthWithEmailAndPassword = async (
     console.log("Parameters not recieved");
     return;
   }
-
-
   const usernameAvailable = await doesUserExist(displayName);
   console.log("username available: ", usernameAvailable);
 
@@ -135,7 +123,7 @@ export const createUserAuthWithEmailAndPassword = async (
         dateCreated: Date.now(),
       });
       console.log(createdUserSnapshot);
-      await updateAvatar('/images/defaultpfp.jpg', displayName.toLowerCase())
+      await updateAvatar("/images/defaultpfp.jpg", displayName.toLowerCase());
       return createdUserSnapshot;
     } catch (error) {
       switch (error.code) {
@@ -163,7 +151,6 @@ export const createUserAuthWithEmailAndPassword = async (
 };
 
 //seedDatabase(FirebaseApp);
-
 
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
@@ -219,13 +206,11 @@ export const updateLoggedInUserFollowing = async (
 
 export async function updateLikes(docId, photoId, userId, liked) {
   const photoDocRef = doc(db, "photos", docId);
-  const collectionRef = collection(db, "photos");
-  const q = query(collectionRef, where("photoId", "==", photoId));
+  const photoSnap = await getDoc(photoDocRef);
   let likes = [];
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    likes = doc.data().likes;
-  });
+  if (photoSnap.exists()) {
+    likes = photoSnap.data().likes;
+  }
   await updateDoc(photoDocRef, {
     likes: liked ? likes.filter((e) => e !== userId) : [...likes, userId],
   });
@@ -238,13 +223,11 @@ export async function updateFollowedUserFollowers(
   isFollowingProfile
 ) {
   const userDocRef = doc(db, "users", otherUserDocId);
-  const collectionRef = collection(db, "users");
-  const q = query(collectionRef, where("userId", "==", otherUserId));
+  const userSnap = await getDoc(userDocRef);
   let followers = [];
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    followers = doc.data().followers;
-  });
+  if (userSnap.exists()) {
+    followers = userSnap.data().followers;
+  }
   await updateDoc(userDocRef, {
     followers: isFollowingProfile
       ? followers.filter((e) => e !== loggedInUserId)
@@ -254,13 +237,12 @@ export async function updateFollowedUserFollowers(
 
 export async function updateComments({ displayName, comment }, docId, photoId) {
   const photoDocRef = doc(db, "photos", docId);
-  const collectionRef = collection(db, "photos");
-  const q = query(collectionRef, where("photoId", "==", photoId));
+  const photoSnap = await getDoc(photoDocRef);
   let comments = [];
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    comments = doc.data().comments;
-  });
+  if (photoSnap.exists()) {
+    comments = photoSnap.data().comments;
+  }
+
   await updateDoc(photoDocRef, {
     comments: [...comments, { displayName, comment }],
   });
@@ -298,58 +280,89 @@ export async function getPhotos(userId, following) {
   const q = query(collectionRef, where("userId", "in", following));
   const querySnapshot = await getDocs(q);
 
-  const userFollowedPhotos = await Promise.all(querySnapshot.docs.map(async (photo) => (
-    
-    {
-    ...photo.data(),
+  const userFollowedPhotos = await Promise.all(
+    querySnapshot.docs.map(async (photo) => ({
+      ...photo.data(),
       docId: photo.id,
-    imageUrl: await getUserPost(photo.id),
-  })));
+      imageUrl: await getUserPost(photo.id),
+    }))
+  );
 
   return getPhotoWithUserDetails(userFollowedPhotos, userId);
+}
+
+export async function getPhotoByDocId(docId) {
+  const docRef = doc(db, "photos", docId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const imageSrc = await getUserPost(docId);
+    const res = { ...docSnap.data(), docId: docSnap.id, imageUrl: imageSrc };
+    console.log("Document data:", res);
+    return res;
+  } else {
+    console.log("No such document!");
+  }
 }
 
 export async function getUserPhotosByUserId(userId) {
   const collectionRef = collection(db, "photos");
   const q = query(collectionRef, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
-  const photos = await Promise.all(querySnapshot.docs.map(async (photo) => (
-    {
+  const photos = await Promise.all(
+    querySnapshot.docs.map(async (photo) => ({
       ...photo.data(),
       docId: photo.id,
       imageUrl: await getUserPost(photo.id),
-    })));
-  
+    }))
+  );
+
   return photos;
 }
 
 export async function getUserAvatar(username) {
-  const path = "images/profiles/" + username + '.jpg';
+  const path = "images/profiles/" + username + ".jpg";
   const avatarRef = ref(storage, path);
 
-
-  const result = await getDownloadURL(avatarRef).then((url) => {
-    return url;
-  }).catch(error => {
-    console.log("File does not exist");
-    return null;
-  })
+  const result = await getDownloadURL(avatarRef)
+    .then((url) => {
+      return url;
+    })
+    .catch((error) => {
+      switch (error.code) {
+        case "storage/object-not-found":
+          const pfp = "/images/defaultpfp.jpg";
+          return pfp;
+        case "storage/unauthorized":
+          console.log(error.code);
+          break;
+        case "storage/canceled":
+          console.log(error.code);
+          break;
+        case "storage/unknown":
+          console.log(error.code);
+          break;
+        default:
+          console.log(error.code);
+      }
+    });
 
   return result;
 }
 
-export const createPost = async (caption, userId, file) => {
+export const createPost = async (caption, userId, username, file) => {
   if (!caption || !userId || !file) {
     return;
   }
-  
+
   const post = {
     caption: caption,
     comments: [],
     dateCreated: Date.now(),
     likes: [],
     userId: userId,
-  }
+    username: username,
+  };
 
   const docRef = await addDoc(collection(db, "photos"), post);
   const postId = docRef.id;
@@ -357,11 +370,11 @@ export const createPost = async (caption, userId, file) => {
   return {
     ...post,
     imageUrl: await getUserPost(postId),
-  }
-}
+  };
+};
 
 export async function getUserPost(docId) {
-  const path = "images/posts/" + docId + '.jpg';
+  const path = "images/posts/" + docId + ".jpg";
   const avatarRef = ref(storage, path);
   const result = await getDownloadURL(avatarRef).then((url) => {
     return url;
@@ -370,14 +383,14 @@ export async function getUserPost(docId) {
 }
 
 export async function uploadPostPhoto(file, docId) {
-  const postRef = ref(storage, "images/posts/" + docId + '.jpg');
+  const postRef = ref(storage, "images/posts/" + docId + ".jpg");
   await uploadBytes(postRef, file).then((snapshot) => {
     console.log("Uploaded a blob or file!");
   });
 }
 
 export async function updateAvatar(file, username) {
-  const avatarRef = ref(storage, "images/profiles/" + username + '.jpg');
+  const avatarRef = ref(storage, "images/profiles/" + username + ".jpg");
   await uploadBytes(avatarRef, file).then((snapshot) => {
     console.log("Uploaded a blob or file!");
   });

@@ -2,7 +2,7 @@
 
 export const PostImage = ({ src, caption }) => {
     return (
-        <img src={src} alt={caption} />
+        <img className="w-full h-full" src={src} alt={caption} />
     )
 }
 

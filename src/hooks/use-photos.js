@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getPhotos } from '../utils/firebase.utils';
 
 export default function usePhotos(user) {
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState(null);
 
   useEffect(() => {
     async function getTimelinePhotos() {

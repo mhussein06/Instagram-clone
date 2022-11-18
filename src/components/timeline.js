@@ -20,7 +20,7 @@ export const Timeline = () => {
         ) : (
             <div className="text-center text-2xl mt-36">
               <p> Looks like this list is empty!</p> <br />
-              <p>Follow people to see photos! </p>
+              <p>Follow more people to see photos! </p>
             </div>
       )}
     </div>
