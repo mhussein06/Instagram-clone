@@ -22,7 +22,7 @@ const config = getPersistConfig({
   key: 'root',
   storage,
   whitelist: [
-      'user.currentUser',  
+      
       'user.isLoading',  
   ],
   rootReducer,
