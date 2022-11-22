@@ -75,6 +75,7 @@ export const ProfileHeader = ({ imageSrc, setImageSrc }) => {
         setImageSrc(pfp);
       }
     };
+    setProfileImage(currentProfile.profilePicture);
 
     fetchImageSrc();
 
