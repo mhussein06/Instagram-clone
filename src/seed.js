@@ -1,15 +1,6 @@
 export function seedDatabase(firebase) {
     const users = [
       {
-        userId: 'NvPY9M9MzFTARQ6M816YAzDJxZ72',
-        username: 'karl',
-        fullName: 'Karl Hadwen',
-        emailAddress: 'karlhadwen@gmail.com',
-        following: ['2'],
-        followers: ['2', '3', '4'],
-        dateCreated: Date.now()
-      },
-      {
         userId: '2',
         username: 'raphael',
         fullName: 'Raffaello Sanzio da Urbino',
@@ -49,9 +40,8 @@ export function seedDatabase(firebase) {
         .firestore()
         .collection('photos')
         .add({
-          photoId: i,
+        
           userId: '2',
-          imageSrc: `/images/users/raphael/${i}.jpg`,
           caption: 'Saint George and the Dragon',
           likes: [],
           comments: [
@@ -64,8 +54,6 @@ export function seedDatabase(firebase) {
               comment: 'Would you mind if I used this picture?'
             }
           ],
-          userLatitude: '40.7128°',
-          userLongitude: '74.0060°',
           dateCreated: Date.now()
         });
     }
