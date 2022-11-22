@@ -20,6 +20,7 @@ const App = () => {
   return (
     <Suspense fallback={<Spinner></Spinner>}>
       <Routes>
+        <Route exact path="" element={<Login />} />
         <Route exact path="/" element={<IsUserLoggedIn user={user} />}>
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
