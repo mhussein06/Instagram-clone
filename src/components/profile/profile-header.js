@@ -76,7 +76,6 @@ export const ProfileHeader = ({ imageSrc, setImageSrc }) => {
       }
     };
     setProfileImage(currentProfile.profilePicture);
-
     fetchImageSrc();
 
     const checkUserFollowingProfile = async () => {

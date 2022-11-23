@@ -11,7 +11,8 @@ export const PostPage = () => {
     const [photo, setPhoto] = useState(null);
     const [imageSrc, setImageSrc] = useState('');
 
-    useEffect(() => {
+  useEffect(() => {
+    document.title = "Post - Instagram";
         const fetchData = async () => {
           const data = await getPhotoByDocId(postId);
             setPhoto(data);

@@ -26,6 +26,7 @@ export const Profile = () => {
   const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
+    document.title = "Profile - Instagram";
     async function checkUserExists() {
       const user = await getUserSnapshotFromUsername(username);
       if (user != null) {

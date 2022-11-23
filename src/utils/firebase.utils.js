@@ -11,6 +11,7 @@ import {
   getDocs,
   where,
   addDoc,
+  Firestore,
 } from "firebase/firestore";
 import "firebase/compat/firestore";
 import {
@@ -99,7 +100,6 @@ export const createUserAuthWithEmailAndPassword = async (
     return;
   }
   const usernameAvailable = await doesUserExist(displayName);
-  console.log("username available: ", usernameAvailable);
 
   if (usernameAvailable) {
     try {
@@ -123,7 +123,6 @@ export const createUserAuthWithEmailAndPassword = async (
         dateCreated: Date.now(),
       });
       console.log(createdUserSnapshot);
-      await updateAvatar("/images/defaultpfp.jpg", displayName.toLowerCase());
       return createdUserSnapshot;
     } catch (error) {
       switch (error.code) {
@@ -261,6 +260,9 @@ export const getSuggestedProfiles = async (userId) => {
 };
 
 export async function getPhotoWithUserDetails(userFollowedPhotos, userId) {
+  if (userFollowedPhotos == null) {
+    return [];
+  }
   const photosWithUserDetails = await Promise.all(
     userFollowedPhotos.map(async (photo) => {
       let userLikedPhoto = false;
@@ -278,7 +280,11 @@ export async function getPhotoWithUserDetails(userFollowedPhotos, userId) {
 export async function getPhotos(userId, following) {
   const collectionRef = collection(db, "photos");
   const q = query(collectionRef, where("userId", "in", following));
+  // if ((await getDocs(q)).empty) {
+  //   console.log('followers have no posts');
+  // }
   const querySnapshot = await getDocs(q);
+
 
   const userFollowedPhotos = await Promise.all(
     querySnapshot.docs.map(async (photo) => ({

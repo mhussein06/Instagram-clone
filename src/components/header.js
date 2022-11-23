@@ -59,6 +59,8 @@ export const Header = ({ imageSrc, setImageSrc }) => {
       dispatch(setPhotosStart(user.userId));
     }
     setShowModal(false);
+    setFile("");
+    setCaption("");
   };
 
   const signOutHandler = async () => {

@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export const NotFound = () => {
-  useEffect =
-    (() => {
-      document.title = "Not Found!";
-    },
-    []);
+  useEffect(() => {
+    document.title = "Not Found";
+  });
   return (
     <div className="bg-gray-background">
       <div className="mx-auto max-w-screen-lg">

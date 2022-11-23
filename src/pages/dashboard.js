@@ -1,10 +1,13 @@
 import {MemoizedTimeline} from "../components/timeline";
 import {MemoizedSidebar} from "../components/sidebar/index";
 import { MemoizedHeader } from "../components/header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Dashboard = () => {
   const [imageSrc, setImageSrc] = useState('');
+  useEffect(() => {
+    document.title = "Instagram";
+  })
   return (
     <div className="bg-gray-background">
         <div>

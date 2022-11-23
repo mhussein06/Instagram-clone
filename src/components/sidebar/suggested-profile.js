@@ -39,7 +39,7 @@ export const SuggestedProfile = ({ profile }) => {
       <div className="flex items-center justify-between">
         <Link to={`/p/${username}`}>
        {imageSrc && (<img
-          className="rounded-full w-8 flex mr-3"
+          className="rounded-full w-8 h-8 flex mr-3"
           src={imageSrc}
           alt=""
           />)}

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import { ROUTES } from "../constants/routes";
 import { useDispatch } from "react-redux";
 import { signUpStart } from "../store/user/user.actions";
@@ -13,22 +13,22 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const isInvalid =
     username === "" || fullName === "" || password === "" || email === "";
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    document.title = "SignUP - Instagram";
+  });
 
   const SignUpHandler = async (event) => {
     event.preventDefault();
     try {
-      dispatch(signUpStart(email, password, username, fullName))
+      dispatch(signUpStart(email, password, username, fullName));
       navigate(ROUTES.DASHBOARD);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
-   
   };
-
 
   return (
     <div className="container flex mx-auto max-w-screen-md items-center h-screen">
